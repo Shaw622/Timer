@@ -28,14 +28,18 @@ class ViewController: UIViewController {
     
     // 再生ボタン IBAction
     @IBAction func startTimer(_ sender: Any) {
-        // 再生ボタンを押すとタイマー作成、始動
+        // 動作中のタイマーを1つに保つために、 timer が存在しない場合だけ、タイマーを生成して動作させる
+        if self.timer == nil {
         self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateTimer(_:)), userInfo: nil, repeats: true)
+        }
     }
     
     // 一時停止ボタン IBAction
     @IBAction func pauseTimer(_ sender: Any) {
-        // タイマーを停止
-        self.timer.invalidate()
+        if self.timer != nil {
+        self.timer.invalidate()     // タイマーを停止
+        self.timer = nil            // startTimer() の timer == nil で判断するために、 timer = nil としておく
+        }
     }
     
     // リセットボタン IBAction
@@ -43,6 +47,11 @@ class ViewController: UIViewController {
         // リセットボタンを押すと、タイマーの時間を0に
         self.timer_sec = 0
         self.timerLabel.text = String(format: "%.1f", self.timer_sec)
+        
+        if self.timer != nil {
+            self.timer.invalidate()   // タイマーを停止する
+            self.timer = nil          // startTimer() の timer == nil で判断するために、 timer = nil としておく
+        }
     }
 }
 
